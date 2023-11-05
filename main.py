@@ -72,12 +72,8 @@ def do_prediction_good():
         print(f"An error occurred while loading the model: {str(e)}")
     
     # predict
-    try:
-        with open("static/explainer_good.pkl", "rb") as explainer_file:
-            explainer = pickle.load(explainer_file)
-    except Exception as e:
-        print(f"An error occurred while loading the explainer: {str(e)}")
-
+    
+    explainer = joblib.load(filename="shap/explainer_v3.bz2")
     shap_values = explainer.shap_values(df)
 
     print("IT REACHED HERE")

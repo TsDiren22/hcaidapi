@@ -3,10 +3,8 @@ from whitenoise import WhiteNoise  # Import WhiteNoise
 import pandas as pd
 import joblib
 import shap
-import os
 import base64
 import io
-import hashlib
 import pickle
 import bz2
 import matplotlib.pyplot as plt
@@ -15,42 +13,13 @@ import tensorflow as tf
 app = Flask(__name__)
 app.wsgi_app = WhiteNoise(app.wsgi_app, root='static/') 
 
-def print_directory_structure(directory):
-    with os.scandir(directory) as entries:
-        for entry in entries:
-            if entry.is_dir():
-                print("📁 " + entry.path)  # Print the directory path
-                print_directory_structure(entry.path)  # Recursively print contents of the subdirectory
-            else:
-                print("📃 " + entry.path)  # Print the file path
-
-def calculate_file_hash(file_path):
-    md5_hash = hashlib.md5()
-    with open(file_path, "rb") as f:
-        while chunk := f.read(8192):
-            md5_hash.update(chunk)
-    return md5_hash.hexdigest()
 
 @app.route('/')
 def index():
-    # Get the current working directory
-    current_directory = os.getcwd()
-
-    # Print the entire directory structure
-    print_directory_structure(current_directory)
-
     return render_template('index.html')
 
 @app.route("/predictgood", methods=['POST'])
 def do_prediction_good():
-    #load test.txt and print it out
-    with open('static/test.txt') as f:
-        print(f.read())
-
-    explainer_file_path = "static/explainer_good.bz2"
-
-    explainer_hash = calculate_file_hash(explainer_file_path)
-    print(f"Explainer Hash: {explainer_hash}")
 
     json_data = request.get_json()
     json_data = {
@@ -67,13 +36,14 @@ def do_prediction_good():
     df = pd.DataFrame(json_data, index=[0])
 
     try:
-        model = tf.keras.models.load_model("static/diabetes_good_model.h5")
+        model = tf.keras.models.load_model("static/diabetes_good_model.keras")
     except Exception as e:
         print(f"An error occurred while loading the model: {str(e)}")
     
-    # predict
+    print("Model loaded")
     
-    explainer = joblib.load(filename="shap/explainer_v3.bz2")
+    explainer = joblib.load(filename="shap/explainer_good.pkl")
+    print("Explainer loaded")
     shap_values = explainer.shap_values(df)
 
     print("IT REACHED HERE")

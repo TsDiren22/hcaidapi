@@ -35,21 +35,20 @@ def do_prediction_good():
     print(json_data)
     df = pd.DataFrame(json_data, index=[0])
 
-    try:
-        model = tf.keras.models.load_model("static/diabetes_good_model.h5")
-    except Exception as e:
-        print(f"An error occurred while loading the model: {str(e)}")
-        return jsonify({"Error:": f"An error occurred while loading the model: {str(e)}"})
+    model = tf.keras.models.load_model("static/diabetes_good_model.h5")
+    if model is None:
+        return jsonify({"Error:": "An error occurred while loading the model"})
     
     print("Model loaded")
     
-    try:
-        explainer = joblib.load(filename="static/explainer_good.bz2")
-    except Exception as e:
-        print(f"An error occurred while loading the explainer: {str(e)}")
-        return jsonify({"Error:": f"An error occurred while loading the explainer: {str(e)}"})
+    explainer = joblib.load(filename="static/explainer_good.bz2")
 
     print("Explainer loaded")
+
+    if explainer is None:
+        return jsonify({"Error:": f"An error occurred while loading the explainer: {str(e)}"})
+
+    print("Explainer loaded again")
     shap_values = explainer.shap_values(df)
 
     print("IT REACHED HERE")

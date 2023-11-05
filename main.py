@@ -39,6 +39,7 @@ def do_prediction_good():
         model = tf.keras.models.load_model("static/diabetes_good_model.h5")
     except Exception as e:
         print(f"An error occurred while loading the model: {str(e)}")
+        return jsonify({"Error:": f"An error occurred while loading the model: {str(e)}"})
     
     print("Model loaded")
     
@@ -46,7 +47,8 @@ def do_prediction_good():
         explainer = joblib.load(filename="static/explainer_good.pkl")
     except Exception as e:
         print(f"An error occurred while loading the explainer: {str(e)}")
-        
+        return jsonify({"Error:": f"An error occurred while loading the model: {str(e)}"})
+
     print("Explainer loaded")
     shap_values = explainer.shap_values(df)
 

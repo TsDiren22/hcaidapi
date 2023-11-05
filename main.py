@@ -44,10 +44,10 @@ def do_prediction_good():
     print("Model loaded")
     
     try:
-        explainer = joblib.load(filename="static/explainer_good.pkl")
+        explainer = joblib.load(filename="static/explainer_good.bz2")
     except Exception as e:
         print(f"An error occurred while loading the explainer: {str(e)}")
-        return jsonify({"Error:": f"An error occurred while loading the model: {str(e)}"})
+        return jsonify({"Error:": f"An error occurred while loading the explainer: {str(e)}"})
 
     print("Explainer loaded")
     shap_values = explainer.shap_values(df)

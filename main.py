@@ -47,9 +47,6 @@ def do_prediction_good():
     shap_values = explainer.shap_values(df)
 
     print("IT REACHED HERE")
-    print("Explainer loaded" + shap_values)
-
-    print("Model loaded")
         
     y_pred = model.predict(df)
     pred_diabetes = int(y_pred[0])

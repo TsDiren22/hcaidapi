@@ -14,6 +14,9 @@ import tensorflow as tf
 app = Flask(__name__)
 app.wsgi_app = WhiteNoise(app.wsgi_app, root='static/') 
 
+model = tf.keras.models.load_model("static/diabetes_good_model.h5")
+X_train = pd.read_csv("static/X_train.csv")
+explainer = shap.KernelExplainer(model, X_train.iloc[:50, :])
 
 @app.route('/')
 def index():
@@ -35,25 +38,9 @@ def do_prediction_good():
     }
     print(json_data)
     df = pd.DataFrame(json_data, index=[0])
-
-    model = tf.keras.models.load_model("static/diabetes_good_model.h5")
-    if model is None:
-        return jsonify({"Error:": "An error occurred while loading the model"})
     
     print("Model loaded")
     
-    with zipfile.ZipFile("explainer_archive.zip", "r") as archive:
-        print("Archive opened")
-        with archive.open("explainer.pkl", "r") as f:
-            print("File opened")
-            explainer_bytes = f.read()
-            print("Explainer bytes read")
-            explainer = pickle.loads(explainer_bytes)
-            print("Explainer loaded")
-
-    if explainer is None:
-        return jsonify({"Error:": "An error occurred while loading the explainer"})
-
     print("Explainer loaded again")
     shap_values = explainer.shap_values(df)
 

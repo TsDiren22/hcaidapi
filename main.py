@@ -46,7 +46,7 @@ def do_prediction_good():
     print("Explainer loaded")
 
     if explainer is None:
-        return jsonify({"Error:": f"An error occurred while loading the explainer: {str(e)}"})
+        return jsonify({"Error:": "An error occurred while loading the explainer"})
 
     print("Explainer loaded again")
     shap_values = explainer.shap_values(df)

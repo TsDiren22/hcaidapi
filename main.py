@@ -6,6 +6,7 @@ import shap
 import base64
 import io
 import pickle
+import zipfile
 import bz2
 import matplotlib.pyplot as plt
 import tensorflow as tf
@@ -41,9 +42,14 @@ def do_prediction_good():
     
     print("Model loaded")
     
-    explainer = joblib.load(filename="static/explainer_good.bz2")
-
-    print("Explainer loaded")
+    with zipfile.ZipFile("explainer_archive.zip", "r") as archive:
+        print("Archive opened")
+        with archive.open("explainer.pkl", "r") as f:
+            print("File opened")
+            explainer_bytes = f.read()
+            print("Explainer bytes read")
+            explainer = pickle.loads(explainer_bytes)
+            print("Explainer loaded")
 
     if explainer is None:
         return jsonify({"Error:": "An error occurred while loading the explainer"})

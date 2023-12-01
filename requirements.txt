@@ -3,7 +3,7 @@ gunicorn>=20.1.0
 cors==1.0.1
 Flask-Cors==4.0.0
 tensorboard==2.14.1
-tensorflow==2.14.0
+tensorflow==2.15.0
 tensorflow-estimator==2.14.0
 shap==0.43.0
 matplotlib==3.7.2
